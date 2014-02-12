@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
@@ -18,9 +19,10 @@ public class EventServer {
     
     // init webapp
     WebAppContext contextHandler = new WebAppContext(handlerList, "Chat Webapp", "/chat");
-    URL homepage = EventServer.class.getResource("/index.html");
+    URL homepage = EventServer.class.getResource("/");
     Resource homepageResource = new FileResource(homepage);
-    contextHandler.setBaseResource(homepageResource);
+    ResourceCollection resources = new ResourceCollection(homepageResource);
+    contextHandler.setBaseResource(resources);
     ServletContextHandler socketHandler = new ServletContextHandler(handlerList, "/events");
     
     // init web socket
