@@ -3,23 +3,46 @@
     <title>chat</title>
   </head>
   <body>
-    <script>
-      var connection = new WebSocket('ws://localhost:8080/events/');
-      // When the connection is open, send some data to the server
-      connection.onopen = function () {
-        connection.send('Ping'); // Send the message 'Ping' to the server
-      };
-
-      // Log errors
-      connection.onerror = function (error) {
-        console.log('WebSocket Error ' + error);
-      };
-
-      // Log messages from the server
-      connection.onmessage = function (e) {
-        console.log('Server: ' + e.data);
-      };
-    </script>
+    <script type="text/javascript" src="/chat/jquery-2.1.0.min.js"></script>
     <div>welcome</div>
+    <div id="chatbox">
+    </div>
+    <form id="chatform">
+	    <input type="text" id="chatinput">
+	    <input type="submit" name="Submit" value="Submit">
+    </form>
+    <script>
+	    var connection = new WebSocket('ws://localhost:8080/events/');
+	    // When the connection is open, send some data to the server
+	    connection.onopen = function () {
+	      connection.send('Ping'); // Send the message 'Ping' to the server
+	    };
+	
+	    // Log errors
+	    connection.onerror = function (error) {
+	      console.log('WebSocket Error ' + error);
+	    };
+	
+	    // Log messages from the server
+	    connection.onmessage = function (e) {
+	      console.log('Server: ' + e.data);
+	      updateChatLog(e.data);
+	    };
+	    
+	    function updateChatLog(data) {
+	    	$('#chatbox').append('<span>' + data + '</span><br/>');
+	    }
+	    
+      $(document).ready(function() {
+        $('#chatform').submit(function(event) {
+          var text = $('#chatinput').val();
+          connection.send(text);
+          updateChatLog(text);
+          $('#chatinput').val('');
+          return false;
+        });  
+      });
+      
+    </script>
   </body>
 </html>
